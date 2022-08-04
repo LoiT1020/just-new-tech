@@ -20,7 +20,7 @@ router.get("/", (req, res) => {
     include: [
       {
         model: Comment,
-        attributes: ["id", "comment_text", "post_id", "user_id", "created_at"],
+        attributes: ["id", "post_id", "user_id", "created_at"],
         include: {
           model: User,
           attributes: ["username"],
@@ -35,7 +35,10 @@ router.get("/", (req, res) => {
     .then((dbPostData) => {
       const posts = dbPostData.map((post) => post.get({ plain: true }));
       // pass a single post object into the homepage template
-      res.render("homepage", { posts });
+      res.render('homepage', {
+        posts,
+        loggedIn: req.session.loggedIn
+      });
     })
     .catch((err) => {
       console.log(err);
@@ -69,7 +72,7 @@ router.get('/post/:id', (req, res) => {
     include: [
       {
         model: Comment,
-        attributes: ['id', 'comment_text', 'post_id', 'user_id', 'created_at'],
+        attributes: ['id', 'post_id', 'user_id', 'created_at'],
         include: {
           model: User,
           attributes: ['username']
@@ -91,7 +94,10 @@ router.get('/post/:id', (req, res) => {
       const post = dbPostData.get({ plain: true });
 
       // pass data to template
-      res.render('single-post', { post });
+      res.render('single-post', {
+        post,
+        loggedIn: req.session.loggedIn
+      });
     })
     .catch(err => {
       console.log(err);
